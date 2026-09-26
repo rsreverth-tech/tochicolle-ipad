@@ -3,14 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#07130d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>とちぎ ふしぎの森 - とちコレ！ iPad v1</title>
+<meta name="apple-mobile-web-app-title" content="トチコレ！">
+<link rel="manifest" href="manifest.webmanifest">
+<title>トチコレ！ハンター iPad V2</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap');
-:root{--jp-pop:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Yu Gothic","Meiryo",sans-serif}
-*{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07130d;color:#fff;font-family:var(--jp-pop)} button,input,select,textarea{font-family:var(--jp-pop)}
-#app{position:relative;width:100vw;height:100vh;height:100dvh;background:#07130d;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+:root{--jp-pop:"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif}
+*{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020604;color:#fff;font-family:var(--jp-pop);overscroll-behavior:none} body{display:grid;place-items:center;touch-action:manipulation} button,input,select,textarea{font-family:var(--jp-pop)}
+#app{position:relative;width:min(100vw,177.7778vh);height:min(100vh,56.25vw);aspect-ratio:16/9;background:#07130d;overflow:hidden;box-shadow:0 0 0 1px #ffffff12,0 0 60px #000}
 canvas{position:absolute;inset:0;width:100%;height:100%}
 #hud{position:absolute;inset:16px 20px auto 20px;display:flex;justify-content:space-between;z-index:5;pointer-events:none}
 .hudbox{
@@ -691,22 +693,22 @@ input,select,textarea{color:#fff5d8;background:#163526;border-color:#6f8f72}
  text-shadow:0 1px 3px rgba(0,0,0,.72)!important;
 }
 
+/* iPad V2: touch-first operation + 16:9 logical game surface */
+button{min-height:52px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#ipadStatus{position:absolute;right:14px;top:14px;z-index:22;display:flex;gap:7px;pointer-events:none}
+.ipadChip{font-size:11px;font-weight:800;padding:7px 10px;border-radius:999px;background:#06150fd9;border:1px solid #ffffff2a;color:#fff;text-shadow:0 1px 3px #000}
+#devicePanel{margin-top:16px;padding:14px;border:1px solid #ffffff24;border-radius:16px;background:#ffffff08;text-align:left}
+#devicePanel label{display:block;font-size:13px;font-weight:800;margin:0 0 7px}
+#cameraDeviceSelect{width:100%;min-height:48px;border-radius:12px;border:1px solid #ffffff35;background:#10271b;color:#fff;padding:9px 12px;font-size:16px}
+#devicePanel .deviceActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+#cameraFacingButtons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.cameraFacingBtn{min-height:48px!important;background:#173a28!important;border:2px solid #ffffff2d!important}
+.cameraFacingBtn.selected{background:#365f42!important;border-color:#ffe18a!important;box-shadow:0 0 0 2px #0005 inset!important}
+#devicePanel .deviceNote{font-size:12px;line-height:1.55;margin:8px 0 0;opacity:.9}
+#installHint{font-size:12px;line-height:1.5;margin-top:10px}
+@media (orientation:portrait){body:before{content:"イベント運用はiPadを横向きにしてください";position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:100;background:#000d;border:1px solid #ffffff35;border-radius:999px;padding:8px 14px;font-size:12px;white-space:nowrap}}
+@media(max-width:900px){#cameraSetupCard{font-size:13px}#cameraSetupCard h2{font-size:22px}#cameraSetupActions button{font-size:14px;padding:10px 12px}.startControls{padding:18px!important}}
 
-/* iPad / iOS Safari compatibility */
-html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;touch-action:none}
-button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:48px}
-@supports(padding:max(0px)){
- #hud{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);padding-top:env(safe-area-inset-top)}
- #detectStatus{bottom:max(14px,env(safe-area-inset-bottom));left:max(14px,env(safe-area-inset-left))}
-}
-@media (hover:none) and (pointer:coarse){
- button:hover{filter:none;transform:none}
- .screenFramePoint{width:32px;height:32px;margin:-16px 0 0 -16px}
- #cameraSetupActions button,#calibrationPanel button{min-height:52px;font-size:18px}
-}
-@media (orientation:portrait) and (max-width:1100px){
- #app:before{content:"iPadは横向きで使用してください";position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#07130df2;color:#fff;font-size:clamp(24px,5vw,42px);font-weight:900;text-align:center;padding:32px}
-}
 </style>
 </head>
 <body>
@@ -720,26 +722,26 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-hei
 
 <div id="cameraSetupOverlay">
  <div id="cameraSetupCard">
-  <h2>① カメラ画角にTV範囲を登録</h2>
+  <h2>① カメラ画角に投影画面範囲を登録</h2>
   <p>先に<b>「カメラ映像の中で、実際のゲーム画面がどこに映っているか」</b>を登録します。TVを画角いっぱいにする必要はありません。</p>
-  <div class="setupMeasure"><b>設置の順番</b><br>1. 投球ラインを画面から約0.9〜1.1m確保<br>2. iPhoneを投球者より後方・高めに固定<br>3. 右のカメラ映像でTV全体が見える位置にする<br>4. カメラ映像上のTV四隅をクリック</div>
-  <p id="screenFrameHelp" class="setupImportant">カメラ映像上で ①左上 → ②右上 → ③右下 → ④左下 の順にTV画面の角をクリックしてください。</p>
+  <div class="setupMeasure"><b>設置の順番</b><br>1. 投球ラインを画面から約0.9〜1.1m確保<br>2. iPad背面カメラ（将来はUSBカメラ）を投球者より後方・高めに固定<br>3. カメラ映像で投影画面全体が見える位置にする<br>4. カメラ映像上の投影画面四隅をタップ</div>
+  <p id="screenFrameHelp" class="setupImportant">カメラ映像上で ①左上 → ②右上 → ③右下 → ④左下 の順に投影画面の角をタップしてください。</p>
   <p>この4点から「カメラ画角の中のゲーム画面範囲」を先に計算します。その後、5cm薄ピンク球で精密キャリブレーションします。</p>
-  <div id="cameraSetupActions"><button id="resetScreenFrame" class="secondary">TV範囲をやり直す</button><button id="cameraSetupContinue" disabled>TV範囲OK → 5cm球キャリブレーション</button><button id="cameraSetupCancel" class="secondary">中止</button></div>
+  <div id="cameraSetupActions"><button id="resetScreenFrame" class="secondary">画面範囲をやり直す</button><button id="cameraSetupContinue" disabled>画面範囲OK → 5cm球キャリブレーション</button><button id="cameraSetupCancel" class="secondary">中止</button></div>
  </div>
 </div>
 <div id="screenFrameOverlay">
  <svg id="screenFrameSvg"><polyline id="screenFramePolygon" points=""></polyline></svg>
  <div id="screenFramePoints"></div>
 </div>
-<div id="screenFrameHitArea" aria-label="TV画面四隅登録エリア"></div>
+<div id="screenFrameHitArea" aria-label="投影画面四隅登録エリア"></div>
 
 <div id="calibrationOverlay">
  <div id="calibrationMarker"></div>
  <div id="calibrationPanel">
   <strong>4点キャリブレーション</strong>
   <p id="calibrationHelp">薄ピンクのボールを十字の中心に重ねてください。</p>
-  <button id="captureCalibration">この位置を登録（Space）</button>
+  <button id="captureCalibration">この位置を登録</button>
   <button id="cancelCalibration" class="secondary">中止</button>
  </div>
 </div>
@@ -757,16 +759,17 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-hei
  <div class="startLayout">
   <img class="titleLogo" src="assets/ui/tochikore_hunter_title_logo.webp" alt="トチコレ！ハンター！">
   <div class="card startControls">
-   <div class="sub titleVersion">PROTOTYPE v77</div>
+   <div class="sub titleVersion">iPad BRANCH V1 / BASE V77</div>
   <div class="row">
    <button id="startTest">テスト</button>
-   <button id="startCamera" class="mainStartButton secondary">カメラモード</button>
+   <button id="startCamera" class="mainStartButton secondary">カメラでイベント開始</button>
    <button id="openGameSettings" class="secondary">設定</button>
-   <button id="startCalibration" class="secondary">カメラ設定</button>
+   <button id="startCalibration" class="secondary">カメラ・投影位置設定</button>
   </div>
-  <p id="calibrationState" class="sub">V69用キャリブレーション未実施</p>
+  <p id="calibrationState" class="sub">iPad用キャリブレーション未実施</p>
   </div>
  </div>
+ <div id="ipadStatus"><span id="offlineChip" class="ipadChip">OFFLINE準備中</span><span class="ipadChip">16:9</span></div>
  <img class="reverthCredit" src="assets/ui/reverth_credit.png" alt="REVERTH CREATIVE">
 </div>
 
@@ -797,6 +800,18 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-hei
    </div>
    <button id="recommendedVolume" class="secondary audioPresetBtn">音量を推奨値に戻す</button>
   </div>
+  <div id="devicePanel">
+   <label>iPad内蔵カメラ</label>
+   <div id="cameraFacingButtons">
+    <button id="useBackCamera" class="cameraFacingBtn secondary">背面カメラ</button>
+    <button id="useFrontCamera" class="cameraFacingBtn secondary">前面カメラ</button>
+   </div>
+   <label for="cameraDeviceSelect">USB / 外部カメラ</label>
+   <select id="cameraDeviceSelect"><option value="">外部カメラを選択（接続時）</option></select>
+   <div class="deviceActions"><button id="refreshCameras" class="secondary">カメラ一覧を更新</button></div>
+   <p class="deviceNote">背面／前面は上のボタンで明示的に切り替えます。将来Osmo Action 5 ProなどのUSB/UVCカメラがSafariから認識された場合は、外部カメラ欄から選択できます。カメラを変更するとキャリブレーションは解除されます。</p>
+   <p id="installHint">アプリ風に使う：Safariの共有 →「ホーム画面に追加」→「Webアプリとして開く」をオン。オフライン運用はHTTPSで一度起動・キャッシュ完了後、機内モードで起動テストしてください。</p>
+  </div>
   <div class="row">
    <button id="closeGameSettings">決定して戻る</button>
   </div>
@@ -811,19 +826,20 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-hei
   <p id="resultText"></p>
   <div id="capturedGrid"></div>
   <div class="resultActions">
-   <button id="again" class="resultAgain">もう一度 <span class="enterHint">ENTER</span></button>
+   <button id="again" class="resultAgain">もう一度</button>
    <button id="back" class="secondary resultBack">タイトルへ</button>
   </div>
  </div>
 </div>
 
 <script>
+const app=document.getElementById('app');
 const game=document.getElementById('game'),ctx=game.getContext('2d');
 const video=document.getElementById('camera'),camCanvas=document.getElementById('cameraCanvas'),camCtx=camCanvas.getContext('2d',{willReadFrequently:true});
 const scoreEl=document.getElementById('score'),timeEl=document.getElementById('time'),koEl=document.getElementById('ko'),messageEl=document.getElementById('message'),bossInstruction=document.getElementById('bossInstruction');
 const startScreen=document.getElementById('startScreen'),resultScreen=document.getElementById('resultScreen'),detectStatus=document.getElementById('detectStatus'),detectDot=document.getElementById('detectDot');
 const settingsScreen=document.getElementById('settingsScreen'),speedBadge=document.getElementById('speedBadge');
-let W=innerWidth,H=innerHeight,score=0,timeLeft=50,kos=0,running=false,mode='test',timer=null,targets=[],effects=[],lastHit=0,gameStartedAt=0;
+let W=app.clientWidth,H=app.clientHeight,score=0,timeLeft=50,kos=0,running=false,mode='test',timer=null,targets=[],effects=[],lastHit=0,gameStartedAt=0;
 let bonusGiven=false,bossMode=false,cameraStream=null,lastDetect=0,lastCenter=null,armed=false,missingFrames=0;
 let captured=[];
 let ballFlying=false,flightLastPoint=null,flightStartedAt=0,flightMissing=0;
@@ -853,10 +869,10 @@ try{
 }catch(e){}
 function updateCalibrationState(){
  calibrationState.textContent=homography
-  ? `✓ V69キャリブレーション保存済み${screenBallDiameterPx?' / 5cm球サイズ登録済み':''}（カメラを動かしたら再登録）`
+  ? `✓ iPadキャリブレーション保存済み${screenBallDiameterPx?' / 5cm球サイズ登録済み':''}（カメラを動かしたら再登録）`
   :(legacyCalibrationDetected
-    ? 'V69では画角範囲登録から再キャリブレーションしてください'
-    : 'V69用キャリブレーション未実施（iPhone位置を固定して登録）');
+    ? 'iPad版では画角範囲登録から再キャリブレーションしてください'
+    : 'iPad用キャリブレーション未実施（カメラ位置を固定して登録）');
 }
 function calibrationTargets(){
  return [
@@ -909,7 +925,7 @@ function clearScreenFrameVisuals(){
 function resetScreenFrameRegistration(){
  screenFrameCameraPoints=[];screenFrameHomography=null;clearScreenFrameVisuals();
  cameraSetupContinue.disabled=true;
- screenFrameHelp.textContent='カメラ映像上で ①左上 → ②右上 → ③右下 → ④左下 の順にTV画面の角をクリックしてください。';
+ screenFrameHelp.textContent='カメラ映像上で ①左上 → ②右上 → ③右下 → ④左下 の順に投影画面の角をタップしてください。';
 }
 function renderScreenFrameVisuals(){
  screenFramePointsEl.innerHTML='';
@@ -952,7 +968,7 @@ function registerScreenFramePoint(e){
  if(!cameraSetupActive||screenFrameCameraPoints.length>=4)return;
  const p=cameraPreviewClickToCanvas(e);if(!p)return;
  screenFrameCameraPoints.push(p.camera);screenFrameClientPoints.push(p.client);renderScreenFrameVisuals();
- detectStatus.textContent=`画角登録 ${screenFrameCameraPoints.length}/4：${screenFrameCameraPoints.length===4?'TV範囲を計算中':'次の角をクリック'}`;
+ detectStatus.textContent=`画角登録 ${screenFrameCameraPoints.length}/4：${screenFrameCameraPoints.length===4?'投影画面範囲を計算中':'次の角をタップ'}`;
  const labels=['②右上','③右下','④左下'];
  if(screenFrameCameraPoints.length<4){
   screenFrameHelp.textContent=`${screenFrameCameraPoints.length}/4 登録済み。次は ${labels[screenFrameCameraPoints.length-1]} をクリックしてください。`;
@@ -960,18 +976,18 @@ function registerScreenFramePoint(e){
  }
  const area=polygonArea(screenFrameCameraPoints);
  if(area<CAM_W*CAM_H*.010){
-  screenFrameHelp.textContent='TV範囲が極端に小さいか、4点の順序が不正です。「やり直す」から再登録してください。';
+  screenFrameHelp.textContent='投影画面範囲が極端に小さいか、4点の順序が不正です。「やり直す」から再登録してください。';
   return;
  }
  const fullScreen=[{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:0,y:1}];
  screenFrameHomography=computeHomography(screenFrameCameraPoints,fullScreen);
  if(!screenFrameHomography){
-  screenFrameHelp.textContent='TV範囲の計算に失敗しました。「やり直す」から再登録してください。';return;
+  screenFrameHelp.textContent='投影画面範囲の計算に失敗しました。「やり直す」から再登録してください。';return;
  }
  // ここで初めて「カメラ画角のどこがゲーム画面か」を座標系に反映。
  homography=screenFrameHomography.slice();
  cameraSetupContinue.disabled=false;
- screenFrameHelp.textContent='✓ カメラ画角内のTV範囲を登録しました。黄色い枠がTV画面に沿っていれば次へ進んでください。';
+ screenFrameHelp.textContent='✓ カメラ画角内の投影画面範囲を登録しました。黄色い枠が投影画面に沿っていれば次へ進んでください。';
 }
 screenFrameHitArea.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();registerScreenFramePoint(e)});
 window.addEventListener('resize',()=>{if(cameraSetupActive)requestAnimationFrame(syncScreenFrameHitArea)});
@@ -982,7 +998,7 @@ async function beginCalibration(){
  resetScreenFrameRegistration();
  startScreen.classList.add('hidden');resultScreen.classList.add('hidden');
  cameraSetupOverlay.style.display='block';screenFrameOverlay.style.display='block';video.style.display='block';video.classList.add('setupPreview');detectStatus.style.display='block';
- detectStatus.textContent='画角登録：右のカメラ映像上でTV四隅を 左上→右上→右下→左下 の順にクリック';
+ detectStatus.textContent='画角登録：カメラ映像上で投影画面四隅を 左上→右上→右下→左下 の順にタップ';
  requestAnimationFrame(syncScreenFrameHitArea);
  await startCamera();
  requestAnimationFrame(syncScreenFrameHitArea);
@@ -992,7 +1008,7 @@ async function beginCalibration(){
 function startFourPointCalibration(){
  if(!screenFrameHomography||screenFrameCameraPoints.length!==4)return;
  cameraSetupActive=false;cameraSetupOverlay.style.display='none';screenFrameOverlay.style.display='none';screenFrameHitArea.style.display='none';video.classList.remove('setupPreview');
- // Stage 1のTV範囲マッピングを使った状態で、Stage 2の5cm球精密キャリブレーションへ。
+ // Stage 1の投影画面範囲マッピングを使った状態で、Stage 2の5cm球精密キャリブレーションへ。
  homography=screenFrameHomography.slice();
  calibrationActive=true;calibrationStep=0;calibrationSamples=[];calibrationBallSizes=[];calibrationLiveSamples=[];latestCameraPoint=null;latestCameraBlob=null;
  calibrationOverlay.style.display='block';video.style.display='block';detectStatus.style.display='block';
@@ -1047,7 +1063,7 @@ function setGameSpeed(mode){
 }
 
 let grassCache=[],grassCacheW=0,grassCacheH=0;
-function resize(){const d=Math.min(devicePixelRatio||1,1.5);W=innerWidth;H=innerHeight;game.width=W*d;game.height=H*d;ctx.setTransform(d,0,0,d,0,0);grassCache=[];grassCacheW=0;grassCacheH=0;}
+function resize(){const d=Math.min(devicePixelRatio||1,1.5);W=app.clientWidth;H=app.clientHeight;game.width=W*d;game.height=H*d;ctx.setTransform(d,0,0,d,0,0);grassCache=[];grassCacheW=0;grassCacheH=0;}
 addEventListener('resize',resize);resize();
 
 function audioInit(){
@@ -1490,8 +1506,12 @@ function pos(t,now){
 function reset(){bossInstruction.style.display='none';score=0;timeLeft=50;kos=0;captured=[];bonusGiven=false;bossMode=false;ballFlying=false;flightLastPoint=null;flightStartedAt=0;flightMissing=0;armed=false;lastCenter=null;scoreEl.textContent=0;timeEl.textContent=50;koEl.textContent=0;populate()}
 async function startGame(m){
  audioInit();mode=m;reset();startScreen.classList.add('hidden');resultScreen.classList.add('hidden');
+ if(mode==='camera'){
+  video.style.display='block';detectStatus.style.display='block';
+  const cameraOK=await startCamera();
+  if(!cameraOK){video.style.display='none';detectStatus.style.display='none';startScreen.classList.remove('hidden');return;}
+ }
  await countdown();running=true;gameStartedAt=performance.now();startMusic('game');
- if(mode==='camera'){video.style.display='block';detectStatus.style.display='block';await startCamera()}
  timer=setInterval(()=>{
   if(!running)return;
   const elapsedSec=(performance.now()-gameStartedAt)/1000;
@@ -1683,7 +1703,7 @@ function hitAt(x,y){
  }
 }
 
-game.addEventListener('pointerdown',e=>{if(mode==='test'&&running)hitAt(e.clientX,e.clientY)});
+game.addEventListener('pointerdown',e=>{if(mode==='test'&&running){const r=app.getBoundingClientRect();hitAt(e.clientX-r.left,e.clientY-r.top)}});
 
 function drawBg(){
  if(GAME_BG.complete && GAME_BG.naturalWidth){
@@ -2025,15 +2045,77 @@ function showCaptureResult(){
  renderCapturedResult();
  resultScreen.classList.remove('hidden');
 }
-async function startCamera(){
- if(cameraStream)return;
- try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},frameRate:{ideal:60,min:30}},audio:false});video.srcObject=cameraStream;await video.play();camCanvas.width=CAM_W;camCanvas.height=CAM_H;if(!cameraLoopActive){cameraLoopActive=true;requestAnimationFrame(cameraLoop)}}
- catch(e){alert('カメラを開始できませんでした: '+e.message);mode='test'}
+let cameraSourceMode=localStorage.getItem('tochicolleCameraSourceMode')||'back';
+let selectedCameraId=localStorage.getItem('tochicolleCameraDeviceId')||'';
+function updateCameraSourceUI(){
+ const back=document.getElementById('useBackCamera'),front=document.getElementById('useFrontCamera'),sel=document.getElementById('cameraDeviceSelect');
+ back?.classList.toggle('selected',cameraSourceMode==='back');
+ front?.classList.toggle('selected',cameraSourceMode==='front');
+ if(sel){
+  if(cameraSourceMode==='external'&&[...sel.options].some(o=>o.value===selectedCameraId))sel.value=selectedCameraId;
+  else sel.value='';
+ }
+}
+function clearCameraCalibration(){
+ homography=null;screenBallDiameterPx=null;screenBallDiameters=null;screenFrameCameraPoints=[];screenFrameHomography=null;
+ localStorage.removeItem('ennichiCalibrationV69');updateCalibrationState();
+}
+async function setCameraSource(mode,deviceId=''){
+ const changed=mode!==cameraSourceMode || (mode==='external'&&deviceId!==selectedCameraId);
+ cameraSourceMode=mode;selectedCameraId=mode==='external'?deviceId:'';
+ localStorage.setItem('tochicolleCameraSourceMode',cameraSourceMode);
+ if(selectedCameraId)localStorage.setItem('tochicolleCameraDeviceId',selectedCameraId);else localStorage.removeItem('tochicolleCameraDeviceId');
+ if(changed)clearCameraCalibration();
+ updateCameraSourceUI();
+ if(cameraStream)await startCamera(true);
+}
+async function refreshCameraDevices(){
+ const sel=document.getElementById('cameraDeviceSelect');if(!sel||!navigator.mediaDevices?.enumerateDevices)return;
+ try{
+  const devices=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
+  const current=selectedCameraId;
+  sel.innerHTML='<option value="">外部カメラを選択（接続時）</option>';
+  devices.forEach((d,i)=>{
+   const label=d.label||`カメラ ${i+1}`;
+   // iPad内蔵カメラも一覧に現れるが、背面/前面は専用ボタンで切り替え可能。
+   const o=document.createElement('option');o.value=d.deviceId;o.textContent=label;sel.appendChild(o);
+  });
+  if(cameraSourceMode==='external'&&[...sel.options].some(o=>o.value===current))sel.value=current;else sel.value='';
+  updateCameraSourceUI();
+ }catch(e){}
+}
+async function stopCamera(){
+ if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;video.srcObject=null;}
+}
+async function requestBuiltInCamera(facing){
+ const base={width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30,max:60}};
+ try{
+  return await navigator.mediaDevices.getUserMedia({video:{...base,facingMode:{exact:facing}},audio:false});
+ }catch(exactError){
+  return await navigator.mediaDevices.getUserMedia({video:{...base,facingMode:{ideal:facing}},audio:false});
+ }
+}
+async function startCamera(forceRestart=false){
+ if(cameraStream&&!forceRestart)return true;
+ if(!navigator.mediaDevices?.getUserMedia){alert('このブラウザではカメラAPIを利用できません。Safariを最新版にし、HTTPSまたはホーム画面から起動してください。');return false;}
+ if(forceRestart)await stopCamera();
+ try{
+  if(cameraSourceMode==='external'&&selectedCameraId){
+   cameraStream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:selectedCameraId},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30,max:60}},audio:false});
+  }else{
+   const facing=cameraSourceMode==='front'?'user':'environment';
+   cameraStream=await requestBuiltInCamera(facing);
+  }
+  video.srcObject=cameraStream;await video.play();camCanvas.width=CAM_W;camCanvas.height=CAM_H;
+  await refreshCameraDevices();updateCameraSourceUI();
+  if(!cameraLoopActive){cameraLoopActive=true;requestAnimationFrame(cameraLoop)}
+  return true;
+ }catch(e){alert('カメラを開始できませんでした: '+e.message+'\n\n設定 > Safari > カメラの許可も確認してください。');return false;}
 }
 const MAX_BALLS=4;
 let multiBallTracks=[],nextMultiBallId=1;
 
-// v63: iPhone 12 mini前方設置 + 約5cm薄ピンク球向けの低遅延検出。
+// iPad V2: 背面/前面切替 + 将来のUSB-UVCカメラ + 約5cm薄ピンク球向けの低遅延検出。
 // 「赤っぽい物なら何でも拾う」旧判定を廃止し、色相・彩度・明度・RGB比率・形状を組み合わせる。
 function rgbToHsvFast(r,g,b){
  const rf=r/255,gf=g/255,bf=b/255;
@@ -2147,7 +2229,7 @@ function updateMultiBallTracks(blobs,now){
    t.vcx=(t.vcx||0)*.55+rawVCX*.45;t.vcy=(t.vcy||0)*.55+rawVCY*.45;
    t.prevGX=t.gx;t.prevGY=t.gy;t.cx=b.x;t.cy=b.y;t.gx=p.x;t.gy=p.y;t.lastSeen=now;t.missing=0;
    t.diameter=b.diameter;t.samples=(t.samples||0)+1;
-   // 投げる前に一度静止した球をARM。iPhone前方設置では手元の球を安定してLOCKできる。
+   // 投げる前に一度静止した球をARM。投球者後方カメラでは手元の球を安定してLOCKできる。
    if(move<34)t.stillFrames=(t.stillFrames||0)+1;else t.stillFrames=0;
    if(t.stillFrames>=2)t.armed=true;
    const speed=Math.hypot(t.vx||0,t.vy||0); // screen px/ms
@@ -2204,7 +2286,7 @@ function cameraLoop(){
   if(blobs.length){
    latestCameraPoint={x:blobs[0].x,y:blobs[0].y};latestCameraBlob=blobs[0];
    const p=cameraToScreen(blobs[0].x,blobs[0].y);
-   detectDot.style.display='block';detectDot.style.left=p.x+'px';detectDot.style.top=p.y+'px';
+   const ar=app.getBoundingClientRect();detectDot.style.display='block';detectDot.style.left=(ar.left+p.x)+'px';detectDot.style.top=(ar.top+p.y)+'px';
   }else{
    latestCameraPoint=null;latestCameraBlob=null;detectDot.style.display='none';
   }
@@ -2216,7 +2298,7 @@ function cameraLoop(){
     detectStatus.textContent=`ボール検出OK x:${Math.round(blobs[0].x)} y:${Math.round(blobs[0].y)}　安定:${Math.min(calibrationLiveSamples.length,12)}/12`;
    }else{calibrationLiveSamples=[];detectStatus.textContent='薄ピンク専用検出：ボールを映してください';}
   }else if(cameraSetupActive){
-   detectStatus.textContent=`画角登録 ${screenFrameCameraPoints.length}/4：カメラ映像上のTV四隅をクリック`;
+   detectStatus.textContent=`画角登録 ${screenFrameCameraPoints.length}/4：カメラ映像上の投影画面四隅をタップ`;
   }else if(running&&mode==='camera'){
    updateMultiBallTracks(blobs,now);
    const flying=multiBallTracks.filter(t=>t.flying).length;
@@ -2243,6 +2325,30 @@ document.getElementById('cancelCalibration').onclick=finishCalibration;
 document.addEventListener('keydown',e=>{if(calibrationActive&&e.code==='Space'){e.preventDefault();captureCalibrationPoint()}});
 updateCalibrationState();
 
+
+const cameraDeviceSelect=document.getElementById('cameraDeviceSelect');
+document.getElementById('useBackCamera')?.addEventListener('click',()=>setCameraSource('back'));
+document.getElementById('useFrontCamera')?.addEventListener('click',()=>setCameraSource('front'));
+if(cameraDeviceSelect){
+ cameraDeviceSelect.addEventListener('change',async e=>{
+  if(e.target.value)await setCameraSource('external',e.target.value);
+  else updateCameraSourceUI();
+ });
+}
+document.getElementById('refreshCameras')?.addEventListener('click',async()=>{
+ // 権限取得後でないとSafariがカメラ名を伏せる場合があるため、未起動なら現在選択中の内蔵カメラを一度起動する。
+ if(!cameraStream)await startCamera();else await refreshCameraDevices();
+});
+updateCameraSourceUI();
+
+function updateOfflineChip(){
+ const chip=document.getElementById('offlineChip');if(!chip)return;
+ chip.textContent=navigator.onLine?'ONLINE':'OFFLINE';
+}
+window.addEventListener('online',updateOfflineChip);window.addEventListener('offline',updateOfflineChip);updateOfflineChip();
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{const c=document.getElementById('offlineChip');if(c)c.textContent=navigator.onLine?'CACHE READY':'OFFLINE READY'}).catch(()=>{const c=document.getElementById('offlineChip');if(c)c.textContent='CACHE未登録'}));
+}else{const c=document.getElementById('offlineChip');if(c)c.textContent='CACHE非対応'}
 
 function updateVolumeUI(){
  const b=document.getElementById('bgmVolume'),e=document.getElementById('seVolume');
@@ -2272,7 +2378,7 @@ document.getElementById('seVolume').addEventListener('input',e=>setSeVolume(+e.t
 updateVolumeUI();
 
 document.getElementById('openGameSettings').onclick=()=>{
- updateSpeedUI();updateVolumeUI();
+ updateSpeedUI();updateVolumeUI();refreshCameraDevices();
  settingsScreen.classList.remove('hidden');
 };
 document.getElementById('closeGameSettings').onclick=()=>settingsScreen.classList.add('hidden');
